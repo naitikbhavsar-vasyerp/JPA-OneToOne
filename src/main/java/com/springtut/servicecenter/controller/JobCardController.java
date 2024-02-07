@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springtut.servicecenter.dto.JobCardDto;
 import com.springtut.servicecenter.dto.RequestPayloadDto;
@@ -65,8 +67,20 @@ public class JobCardController {
 			return "JobCard deleted successfully";
 		}
 		else {
-			return "JobCard deletion unsuccessfull";
+			return "JobCard not deleted";
 		}
+	}
+	                  
+	@PostMapping("/upload")
+	public String getFile(@RequestParam("file") MultipartFile file) {
+		String downloadUri = jobCardService.uploadFile(file);
+		return "File uploaded. Download by clicking "+downloadUri;
+	}
+	
+	@GetMapping("/download/{fileName}")
+	public ResponseEntity<Object> getFile(@PathVariable String name){
+		ResponseEntity<Object> entity = jobCardService.getFile(name);
+		return entity;
 	}
 	
 }
